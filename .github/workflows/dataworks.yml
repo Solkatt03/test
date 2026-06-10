@@ -1,0 +1,38 @@
+name: DataWorks CI/CD
+
+on:
+  push:
+    paths:
+      - 'sql/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'sql/**'
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Lint SQL
+        run: |
+          sqlfluff lint sql/ || true
+
+      - name: Deploy & Trigger DataWorks flows
+        env:
+          DATAWORKS_API_ENDPOINT: ${{ secrets.DATAWORKS_API_ENDPOINT }}    # e.g. DataWorks OpenAPI base URL
+          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+          DATAWORKS_PROJECT_CODE: ${{ secrets.DATAWORKS_PROJECT_CODE }}
+        run: |
+          python scripts/deploy_to_dataworks.py --project "$DATAWORKS_PROJECT_CODE" --flow-id "YOUR_FLOW_ID"
