@@ -22,10 +22,10 @@ jobs:
 
       - name: Run Python script
         env:
-          # Actions Variables 
+          # Variables 
           MY_VAR: ${{ vars.MY_VAR }}
           
-          # Actions Secrets
+          #  Secrets
           API_KEY: ${{ secrets.API_KEY }}
           
     
