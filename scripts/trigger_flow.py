@@ -1,7 +1,14 @@
 import os
 import argparse
-from aliyunsdkcore.client import AcsClient
-from aliyunsdkcore.request import CommonRequest
+import sys
+
+try:
+    from aliyunsdkcore.client import AcsClient
+    from aliyunsdkcore.request import CommonRequest
+except ImportError as e:
+    print("Missing SDK. Run: pip install -r scripts/requirements.txt")
+    print("ImportError:", e)
+    sys.exit(2)
 
 REGION = os.getenv("ALIYUN_REGION", "cn-hangzhou")
 
@@ -9,7 +16,8 @@ def make_client():
     ak = os.getenv("ALIYUN_ACCESS_KEY_ID")
     secret = os.getenv("ALIYUN_ACCESS_KEY_SECRET")
     if not ak or not secret:
-        raise SystemExit("Missing ALIYUN_ACCESS_KEY_ID or ALIYUN_ACCESS_KEY_SECRET")
+        print("Missing ALIYUN_ACCESS_KEY_ID or ALIYUN_ACCESS_KEY_SECRET (set as GitHub Secrets)")
+        sys.exit(3)
     return AcsClient(ak, secret, REGION)
 
 def trigger_flow(client, project, flow_id):
@@ -35,4 +43,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# ...existing code...
