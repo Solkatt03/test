@@ -1,39 +1,29 @@
-#!/usr/bin/env python3
+name: Run Python Script
 
-import os
-import sys
-import platform
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:   # 允许手动触发
 
-def main():
-    print("=" * 50)
-    print("Python script executed by GitHub Actions")
-    print("=" * 50)
+jobs:
+  execute-python:
+    runs-on: ubuntu-latest
 
-   
-    # 自定义环境变量
-    my_var = os.getenv("MY_CUSTOM_VAR", "default_value")
-    print(f"MY_CUSTOM_VAR = {my_var}")
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 计算
-    numbers = [1, 2, 3, 4, 5]
-    total = sum(numbers)
-    print(f"Sum of {numbers} = {total}")
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    # # 可选：使用 requests 调用 API（需要提前安装 requests）
-    # # 如果不需要，可以注释掉。若要启用，请在 requirements.txt 中添加 requests
-    # try:
-    #     import requests
-    #     response = requests.get("https://api.github.com/zen")
-    #     if response.status_code == 200:
-    #         print(f"GitHub Zen: {response.text}")
-    #     else:
-    #         print("API call failed")
-    # except ImportError:
-    #     print("requests 库未安装，跳过 API 调用示例")
-    # except Exception as e:
-    #     print(f"API 调用出错: {e}")
+      - name: Install dependencies (optional)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    print("\n脚本执行完毕！")
-
-if __name__ == "__main__":
-    main()
+      - name: Run Python script
+        run: python test/scripts/number.py
