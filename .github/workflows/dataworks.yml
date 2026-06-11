@@ -1,7 +1,6 @@
 name: DataWorks SDK - simple trigger
 
 on:
-  workflow_dispatch: {}
   push:
     paths:
       - 'sql/**'
@@ -11,7 +10,6 @@ on:
 jobs:
   trigger-flow:
     runs-on: ubuntu-latest
-    environment: env                   
     steps:
       - uses: actions/checkout@v4
 
@@ -21,13 +19,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install deps
-        run: python -m pip install --upgrade pip && pip install -r scripts/requirements.txt
-
-      - name: Debug: check secrets presence (will NOT print values)
-        run: |
-          if [ -z "${{ secrets.ALIYUN_ACCESS_KEY_ID }}" ]; then echo "ALIYUN_ACCESS_KEY_ID: (empty)"; else echo "ALIYUN_ACCESS_KEY_ID: (present)"; fi
-          if [ -z "${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}" ]; then echo "ALIYUN_ACCESS_KEY_SECRET: (empty)"; else echo "ALIYUN_ACCESS_KEY_SECRET: (present)"; fi
-          ls -la scripts || true
+        run: pip install -r scripts/requirements.txt
 
       - name: Trigger DataWorks flow (SDK)
         env:
