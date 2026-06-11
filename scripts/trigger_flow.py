@@ -1,14 +1,7 @@
 import os
 import argparse
-import sys
-
-try:
-    from aliyunsdkcore.client import AcsClient
-    from aliyunsdkcore.request import CommonRequest
-except ImportError as e:
-    print("Missing SDK. Run: pip install -r scripts/requirements.txt")
-    print("ImportError:", e)
-    sys.exit(2)
+from aliyunsdkcore.client import AcsClient
+from aliyunsdkcore.request import CommonRequest
 
 REGION = os.getenv("ALIYUN_REGION", "cn-hangzhou")
 
@@ -16,8 +9,7 @@ def make_client():
     ak = os.getenv("ALIYUN_ACCESS_KEY_ID")
     secret = os.getenv("ALIYUN_ACCESS_KEY_SECRET")
     if not ak or not secret:
-        print("Missing ALIYUN_ACCESS_KEY_ID or ALIYUN_ACCESS_KEY_SECRET (set as GitHub Secrets)")
-        sys.exit(3)
+        raise SystemExit("Missing ALIYUN_ACCESS_KEY_ID or ALIYUN_ACCESS_KEY_SECRET")
     return AcsClient(ak, secret, REGION)
 
 def trigger_flow(client, project, flow_id):
@@ -26,7 +18,7 @@ def trigger_flow(client, project, flow_id):
     req.set_domain('dataworks-public.cn-hangzhou.aliyuncs.com')
     req.set_method('POST')
     req.set_version('2018-06-01')
-    req.set_action_name('CreateFlowInstance')  
+    req.set_action_name('CreateFlowInstance')  # 常用 action，按需替换
     req.add_query_param('ProjectName', project)
     req.add_query_param('FlowId', flow_id)
     resp = client.do_action_with_exception(req)
