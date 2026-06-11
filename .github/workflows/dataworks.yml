@@ -6,7 +6,6 @@ on:
       - 'sql/**'
       - 'scripts/**'
       - '.github/workflows/**'
-  workflow_dispatch: {}
 
 jobs:
   trigger-flow:
@@ -19,13 +18,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r scripts/requirements.txt
-
-      - name: Debug: list scripts
-        run: ls -la scripts || true
+      - name: Install deps
+        run: pip install -r scripts/requirements.txt
 
       - name: Trigger DataWorks flow (SDK)
         env:
