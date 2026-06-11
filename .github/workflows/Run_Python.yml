@@ -5,7 +5,7 @@ on:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
-  workflow_dispatch:   # 允许手动触发
+  workflow_dispatch:   
 
 jobs:
   execute-python:
@@ -26,4 +26,4 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run Python script
-        run: python test/scripts/number.py
+        run: python scripts/number.py
