@@ -28,4 +28,4 @@ jobs:
 
       - name: Run CSV validation
         run: |
-          python src/csv_check.py
+          python scripts/csv_check.py
